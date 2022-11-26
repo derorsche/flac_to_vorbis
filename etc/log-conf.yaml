@@ -1,0 +1,25 @@
+# https://docs.python.org/ja/3.10/library/logging.config.html#dictionary-schema-details
+version: 1
+formatters:
+  default:
+    format: '[%(asctime)s] %(name)s - %(levelname)s: %(message)s'
+    datefmt: '%Y-%m-%d %H:%M:%S'
+handlers:
+  console:
+    class: logging.StreamHandler
+    formatter: default
+    stream: ext://sys.stdout
+  file:
+    class: logging.handlers.RotatingFileHandler
+    formatter: default
+    filename: log/main.log
+    maxBytes: 102400
+    backupCount: 4
+    encoding: utf-8
+loggers:
+  __main__:
+    level: DEBUG
+    handlers: [console]
+  root:
+    level: ERROR
+    handlers: [file]

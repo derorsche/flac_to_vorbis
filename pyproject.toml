@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "flac-to-vorbis"
+version = "0.1.0"
+description = ""
+authors = ["Anthyme <90059514+derorsche@users.noreply.github.com>"]
+readme = "README.md"
+packages = [{include = "flac_to_vorbis"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+PyYAML = "^6.0"
+
+
+[tool.poetry.group.dev.dependencies]
+flake8 = "^5.0.4"
+black = "^22.8.0"
+python-dotenv = "^0.21.0"
+notebook = "^6.4.12"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
