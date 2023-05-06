@@ -19,11 +19,17 @@ def main():
     flac_dir = os.environ["FLAC_PATH"]
     vorbis_dir = os.environ["VORBIS_PATH"]
 
-    for flac in glob.glob("**/*.flac", root_dir=flac_dir, recursive=True):
-        dst = os.path.join(vorbis_dir, os.path.splitext(flac)[0] + ".ogg")
+    vorbis_files = glob.glob("**/*.ogg", root_dir=vorbis_dir, recursive=True)
+    exists: list[str] = []
 
-        if os.path.exists(dst):
+    for flac in glob.glob("**/*.flac", root_dir=flac_dir, recursive=True):
+        base = os.path.splitext(flac)[0] + ".ogg"
+
+        if base in vorbis_files:
+            exists.append(base)
             continue
+
+        dst = os.path.join(vorbis_dir, base)
 
         if not os.path.exists(os.path.dirname(dst)):
             os.makedirs(os.path.dirname(dst), exist_ok=True)
@@ -41,6 +47,12 @@ def main():
                 dst,
             ]
         )
+
+        exists.append(base)
+
+    for deleted in set(vorbis_files).difference(set(exists)):
+        logger.info(f"{deleted} is deleted.")
+        os.remove(os.path.join(vorbis_dir, deleted))
 
     visited: set[str] = set()
 
