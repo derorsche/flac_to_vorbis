@@ -20,6 +20,9 @@ loggers:
   __main__:
     level: DEBUG
     handlers: [console]
+  module:
+    level: DEBUG
+    handlers: [console]
   root:
     level: ERROR
     handlers: [file]
