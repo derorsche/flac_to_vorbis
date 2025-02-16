@@ -1,77 +1,20 @@
-import glob
-import os
-import subprocess
 from logging import config, getLogger
-from shutil import copy2
 
 import dotenv
 from yaml import safe_load
+
+from module import key_module
 
 logger = getLogger(__name__)
 
 
 def main():
-    dotenv.load_dotenv()
-
     with open("etc/log-conf.yaml", "r", encoding="utf-8") as f:
         config.dictConfig(safe_load(f))
 
-    flac_dir = os.environ["FLAC_PATH"]
-    vorbis_dir = os.environ["VORBIS_PATH"]
-
-    vorbis_files = glob.glob("**/*.ogg", root_dir=vorbis_dir, recursive=True)
-    exists: list[str] = []
-
-    for flac in glob.glob("**/*.flac", root_dir=flac_dir, recursive=True):
-        base = os.path.splitext(flac)[0] + ".ogg"
-
-        if base in vorbis_files:
-            exists.append(base)
-            continue
-
-        dst = os.path.join(vorbis_dir, base)
-
-        if not os.path.exists(os.path.dirname(dst)):
-            os.makedirs(os.path.dirname(dst), exist_ok=True)
-
-        subprocess.run(
-            [
-                "ffmpeg",
-                "-i",
-                os.path.join(flac_dir, flac),
-                "-vn",
-                "-acodec",
-                "libvorbis",
-                "-aq",
-                "6",
-                dst,
-            ]
-        )
-
-        exists.append(base)
-
-    for deleted in set(vorbis_files).difference(set(exists)):
-        logger.info(f"{deleted} is deleted.")
-        os.remove(os.path.join(vorbis_dir, deleted))
-
-    visited: set[str] = set()
-
-    for flac in glob.glob("**/*.flac", root_dir=flac_dir, recursive=True):
-        dir = os.path.dirname(flac)
-
-        if dir in visited:
-            continue
-        else:
-            visited.add(dir)
-
-        if covers := glob.glob("Cover.*", root_dir=os.path.join(flac_dir, dir)):
-            for cover in covers:
-                copy2(
-                    os.path.join(flac_dir, dir, cover),
-                    os.path.join(vorbis_dir, dir, cover),
-                )
-        else:
-            logger.info(f"No cover art found in {dir}")
+    dotenv.load_dotenv()
+    key_module.check_prerequisite()
+    key_module.sync_vorbis()
 
 
 if __name__ == "__main__":

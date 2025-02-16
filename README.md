@@ -1,0 +1,3 @@
+- Convert all FLAC music files stored in a specified directory to Ogg Vorbis.
+- FFmpeg installation is required.
+- Some environment variable need to be configured (see `.env.sample`).

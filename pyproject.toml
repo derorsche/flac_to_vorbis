@@ -4,15 +4,13 @@ version = "0.1.0"
 description = ""
 authors = ["Anthyme <90059514+derorsche@users.noreply.github.com>"]
 readme = "README.md"
-packages = [{include = "flac_to_vorbis"}]
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "^3.12"
 PyYAML = "^6.0"
-
+python-dotenv = "^1.0.1"
 
 [tool.poetry.group.dev.dependencies]
-python-dotenv = "^1.0.1"
 
 [build-system]
 requires = ["poetry-core"]
